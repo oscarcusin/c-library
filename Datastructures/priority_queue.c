@@ -1,10 +1,11 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+
 #include "priority_queue.h"
 
 struct node {
-    int priority;
+    long priority;
     void * item;
 };
 
@@ -41,7 +42,7 @@ void priority_queue_free(priority_queue * q) {
 
 void priority_queue_free_items(priority_queue * q) {
     if (q == NULL) return;
-    for (int i = 0; i < q->size; i++) {
+    for (size_t i = 0; i < q->size; i++) {
         free(q->heap[i].item);
     }
 }
@@ -50,7 +51,7 @@ size_t priority_queue_size(priority_queue * q) {
     return q->size;
 }
 
-int priority_queue_push(priority_queue * q, void * item, int priority) {
+int priority_queue_push(priority_queue * q, void * item, long priority) {
     if (q == NULL) return -1;
     if (q->size >= q->capacity) {
         q->capacity *= 2;
@@ -103,7 +104,7 @@ void * priority_queue_peek(priority_queue * q) {
 
 int priority_queue_contains(priority_queue * q, void * item) {
     if (q == NULL) return 0;
-    for (int i = 0; i < q->size; i++) {
+    for (size_t i = 0; i < q->size; i++) {
         if (q->heap[i].item == item) return 1;
     }
     return 0;

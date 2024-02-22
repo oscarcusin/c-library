@@ -21,7 +21,7 @@ size_t priority_queue_size(priority_queue * pq);
 
 // Adds ITEM to the priority queue PQ with priority PRIORITY (lower value means higher priority)
 // Returns 0 on success, -1 on failure.
-int priority_queue_push(priority_queue * pq, void * item, int priority);
+int priority_queue_push(priority_queue * pq, void * item, long priority);
 
 // Removes and returns the item with the highest priority (lowest value) from the priority queue PQ.
 // Returns NULL on failure.

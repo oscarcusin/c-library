@@ -49,7 +49,7 @@ void * list_get(list * l, size_t index);
 
 // Sort the list L using the CMP function.
 // Returns 0 on success, -1 on failure.
-int list_sort(list * l, int (* cmp) (const void *, const void *));
+int list_sort(list * l, int (* cmp) (const void **, const void **));
 
 // Returns 1 if ITEM is in the list L, 0 otherwise.
 int list_contains(list * l, void * item);

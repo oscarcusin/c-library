@@ -1,6 +1,7 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+
 #include "queue.h"
 
 struct q {
@@ -38,7 +39,7 @@ void queue_free(queue * q) {
 
 void queue_free_items(queue * q) {
     if (q == NULL) return;
-    for (int i = 0; i < q->size; i++) {
+    for (size_t i = 0; i < q->size; i++) {
         free(q->items[(q->front + i) % q->capacity]);
     }
 }
@@ -83,7 +84,7 @@ void * queue_peek(queue * q) {
 
 int queue_contains(queue * q, void * item) {
     if (q == NULL) return 0;
-    for (int i = 0; i < q->size; i++) {
+    for (size_t i = 0; i < q->size; i++) {
         if (q->items[(q->front + i) % q->capacity] == item) return 1;
     }
     return 0;

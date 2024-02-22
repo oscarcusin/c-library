@@ -1,5 +1,6 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 #include "list.h"
 
 struct l {
@@ -29,7 +30,7 @@ list * list_copy(list * l) {
     if (l == NULL) return NULL;
     list * copy = list_new();
     if (copy == NULL) return NULL;
-    for (int i = 0; i < l->size; i++) {
+    for (size_t i = 0; i < l->size; i++) {
         list_add(copy, l->items[i]);
     }
     return copy;
@@ -45,8 +46,9 @@ void list_free(list * l) {
 
 void list_free_items(list * l) {
     if (l == NULL) return;
-    for (int i = 0; i < l->size; i++) {
+    for (size_t i = 0; i < l->size; i++) {
         free(l->items[i]);
+        l->items[i] = NULL;
     }
 }
 
@@ -70,7 +72,7 @@ int list_insert(list * l, size_t index, void * item) {
         }
         l->items = new_items;
     }
-    for (int i = l->size; i > index; i--) {
+    for (size_t i = l->size; i > index; i--) {
         l->items[i] = l->items[i - 1];
     }
     l->items[index] = item;
@@ -84,9 +86,9 @@ int list_add(list * l, void * item) {
 
 int list_remove(list * l, void * item) {
     if (l == NULL) return -1;
-    for (int i = 0; i < l->size; i++) {
+    for (size_t i = 0; i < l->size; i++) {
         if (l->items[i] == item) {
-            for (int j = i; j < l->size - 1; j++) {
+            for (size_t j = i; j < l->size - 1; j++) {
                 l->items[j] = l->items[j + 1];
             }
             l->size--;
@@ -102,7 +104,7 @@ int list_remove_at(list * l, size_t index) {
         printf("Index %lu out of bounds for length %lu.\n", index, l->size);
         return -1;
     }
-    for (int i = index; i < l->size - 1; i++) {
+    for (size_t i = index; i < l->size - 1; i++) {
         l->items[i] = l->items[i + 1];
     }
     l->size--;
@@ -128,15 +130,15 @@ void * list_get(list * l, size_t index) {
     return l->items[index];
 }
 
-int list_sort(list * l, int (* comparator) (const void *, const void *)) {
+int list_sort(list * l, int (* comparator) (const void **, const void **)) {
     if (l == NULL) return -1;
-    qsort(l->items, l->size, sizeof(void *), comparator);
+    qsort(l->items, l->size, sizeof(void *), (int (*) (const void *, const void *)) comparator);
     return 0;
 }
 
 int list_contains(list * l, void * item) {
     if (l == NULL) return 0;
-    for (int i = 0; i < l->size; i++) {
+    for (size_t i = 0; i < l->size; i++) {
         if (l->items[i] == item) return 1;
     }
     return 0;
@@ -144,7 +146,7 @@ int list_contains(list * l, void * item) {
 
 int list_concat(list * l1, list * l2) {
     if (l1 == NULL || l2 == NULL) return -1;
-    for (int i = 0; i < l2->size; i++) {
+    for (size_t i = 0; i < l2->size; i++) {
         list_add(l1, l2->items[i]);
     }
     return 0;
