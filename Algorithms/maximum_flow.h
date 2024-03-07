@@ -1,9 +1,14 @@
-#include "weighted_graph.h"
+#include "graph.h"
 
 #ifndef MAXIMUM_FLOW_H
 #define MAXIMUM_FLOW_H
 
-// Returns the maximum flow from FROM to TO in the weighted graph WG.
-long maximum_flow(weighted_graph * wg, size_t from, size_t to, long flow[][weighted_graph_vertices(wg)], long residual[][weighted_graph_vertices(wg)]);
+typedef struct {long capacity, flow;} flow_data;
+
+// Finds the maximum flow in a flow graph FG from source FROM to sink TO.
+// The flow graph FG is represented as a custom_graph, with the data field being of type flow_data.
+// Warning: the flow graph FG will be modified by this function.
+// Returns the maximum flow from source S to sink T, or -1 if an error occurs.
+long maximum_flow(custom_graph * fg, size_t from, size_t to);
 
 #endif

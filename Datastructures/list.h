@@ -9,6 +9,10 @@ typedef struct l list;
 // Returns pointer to the list on success, NULL on failure.
 list * list_new();
 
+// Creates a new list with a capacity of CAPACITY.
+// Returns pointer to the list on success, NULL on failure.
+list * list_new_with_capacity(size_t capacity);
+
 // Creates a copy of the list L.
 // Returns pointer to the copy on success, NULL on failure.
 list * list_copy(list * l);
@@ -50,6 +54,10 @@ void * list_get(list * l, size_t index);
 // Sort the list L using the CMP function.
 // Returns 0 on success, -1 on failure.
 int list_sort(list * l, int (* cmp) (const void **, const void **));
+
+// Reverses the list L.
+// Returns 0 on sucess, -1 on failure.
+int list_reverse(list * l);
 
 // Returns 1 if ITEM is in the list L, 0 otherwise.
 int list_contains(list * l, void * item);

@@ -9,6 +9,10 @@ typedef struct stack stack;
 // Returns pointer to the stack on success, NULL on failure.
 stack * stack_new();
 
+// Creates a new stack with a capacity of CAPACITY.
+// Returns pointer to the stack on success, NULL on failure.
+stack * stack_new_with_capacity(size_t capacity);
+
 // Frees the stack S.
 void stack_free(stack * s);
 

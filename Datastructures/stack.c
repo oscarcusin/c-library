@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "stack.h"
@@ -12,13 +11,9 @@ struct stack {
 
 stack * stack_new() {
     stack * s = malloc(sizeof(stack));
-    if (s == NULL) {
-        fprintf(stderr, "stack_new(): Failed to allocate %lu bytes for stack struct.\n", sizeof(stack));
-        return NULL;
-    }
+    if (s == NULL) return NULL;
     s->items = malloc(INITIAL_CAPACITY * sizeof(void *));
     if (s->items == NULL) {
-        fprintf(stderr, "stack_new(): Failed to allocate %lu bytes for internal array.\n", INITIAL_CAPACITY * sizeof(void *));
         free(s);
         return NULL;
     }
@@ -27,17 +22,29 @@ stack * stack_new() {
     return s;
 }
 
+stack * stack_new_with_capacity(size_t capacity) {
+    stack * s = malloc(sizeof(stack));
+    if (s == NULL) return NULL;
+    s->items = malloc(capacity * sizeof(void *));
+    if (s->items == NULL) {
+        free(s);
+        return NULL;
+    }
+    s->size = 0;
+    s->capacity = capacity;
+    return s;
+}
+
 void stack_free(stack * s) {
     if (s == NULL) return;
     free(s->items);
     s->items = NULL;
     free(s);
-    s = NULL;
 }
 
 void stack_free_items(stack * s) {
     if (s == NULL) return;
-    for (int i = 0; i < s->size; i++) {
+    for (size_t i = 0; i < s->size; i++) {
         free(s->items[i]);
     }
 }
@@ -51,10 +58,7 @@ int stack_push(stack * s, void * item) {
     if (s->size >= s->capacity) {
         s->capacity *= 2;
         void ** new_items = realloc(s->items, s->capacity * sizeof(void *));
-        if (new_items == NULL) {
-            fprintf(stderr, "stack_push(): Failed to allocate %lu bytes for internal array.\n", s->capacity * sizeof(void *));
-            return -1;
-        }
+        if (new_items == NULL) return -1;
         s->items = new_items;
     }
     s->items[s->size] = item;
@@ -75,7 +79,7 @@ void * stack_peek(stack * s) {
 
 int stack_contains(stack * s, void * item) {
     if (s == NULL) return 0;
-    for (int i = 0; i < s->size; i++) {
+    for (size_t i = 0; i < s->size; i++) {
         if (s->items[i] == item) return 1;
     }
     return 0;

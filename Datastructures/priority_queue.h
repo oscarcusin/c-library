@@ -9,6 +9,10 @@ typedef struct pq priority_queue;
 // Returns pointer to the priority queue on success, NULL on failure.
 priority_queue * priority_queue_new();
 
+// Creates a new priority queue with a capacity of CAPACITY.
+// Returns pointer to the priority queue on success, NULL on failure.
+priority_queue * priority_queue_new_with_capacity(size_t capacity);
+
 // Frees the priority queue PQ.
 void priority_queue_free(priority_queue * pq);
 

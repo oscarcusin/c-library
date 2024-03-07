@@ -1,4 +1,4 @@
-#include "weighted_graph.h"
+#include "graph.h"
 
 #ifndef MINIMUM_SPANNING_TREE_H
 #define MINIMUM_SPANNING_TREE_H

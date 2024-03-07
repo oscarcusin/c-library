@@ -9,6 +9,10 @@ typedef struct q queue;
 // Returns pointer to the queue on success, NULL on failure.
 queue * queue_new();
 
+// Creates a new queue with a capacity of CAPACITY.
+// Returns pointer to the queue on success, NULL on failure.
+queue * queue_new_with_capacity(size_t capacity);
+
 // Frees the queue Q.
 void queue_free(queue * q);
 

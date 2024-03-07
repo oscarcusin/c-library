@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "disjoint_set.h"
 
@@ -11,19 +10,14 @@ struct ds {
 
 disjoint_set * disjoint_set_new(size_t n) {
     disjoint_set * ds = malloc(sizeof(disjoint_set));
-    if (ds == NULL) {
-        fprintf(stderr, "disjoint_set_new(): Failed to allocate %lu bytes for disjoint_set struct.\n", sizeof(disjoint_set));
-        return NULL;
-    }
+    if (ds == NULL) return NULL;
     ds->repr = malloc(n * sizeof(size_t));
     if (ds->repr == NULL) {
-        fprintf(stderr, "disjoint_set_new(): Failed to allocate %lu bytes for repr array.\n", n * sizeof(size_t));
         free(ds);
         return NULL;
     }
     ds->set_size = malloc(n * sizeof(size_t));
     if (ds->set_size == NULL) {
-        fprintf(stderr, "disjoint_set_new(): Failed to allocate %lu bytes for size array.\n", n * sizeof(size_t));
         free(ds->repr);
         ds->repr = NULL;
         free(ds);

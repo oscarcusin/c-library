@@ -1,29 +1,24 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "priority_queue.h"
 
-struct node {
+struct pq_node {
     long priority;
     void * item;
 };
 
 struct pq {
-    struct node * heap;
+    struct pq_node * heap;
     size_t size;
     size_t capacity;
 };
 
 priority_queue * priority_queue_new() {
     priority_queue * q = malloc(sizeof(priority_queue));
-    if (q == NULL) {
-        fprintf(stderr, "priority_queue_new(): Failed to allocate %lu bytes for priority_queue struct.\n", sizeof(priority_queue));
-        return NULL;
-    }
-    q->heap = malloc(INITIAL_CAPACITY * sizeof(struct node));
+    if (q == NULL) return NULL;
+    q->heap = malloc(INITIAL_CAPACITY * sizeof(struct pq_node));
     if (q->heap == NULL) {
-        fprintf(stderr, "priority_queue_new(): Failed to allocate %lu bytes for internal array.\n", INITIAL_CAPACITY * sizeof(struct node));
         free(q);
         return NULL;
     }
@@ -32,12 +27,24 @@ priority_queue * priority_queue_new() {
     return q;
 }
 
+priority_queue * priority_queue_new_with_capacity(size_t capacity) {
+    priority_queue * q = malloc(sizeof(priority_queue));
+    if (q == NULL) return NULL;
+    q->heap = malloc(capacity * sizeof(struct pq_node));
+    if (q->heap == NULL) {
+        free(q);
+        return NULL;
+    }
+    q->size = 0;
+    q->capacity = capacity;
+    return q;
+}
+
 void priority_queue_free(priority_queue * q) {
     if (q == NULL) return;
     free(q->heap);
     q->heap = NULL;
     free(q);
-    q = NULL;
 }
 
 void priority_queue_free_items(priority_queue * q) {
@@ -55,12 +62,9 @@ int priority_queue_push(priority_queue * q, void * item, long priority) {
     if (q == NULL) return -1;
     if (q->size >= q->capacity) {
         q->capacity *= 2;
-        struct node * new_heap = malloc(q->capacity * sizeof(struct node));
-        if (new_heap == NULL) {
-            fprintf(stderr, "priority_queue_push): Failed to allocate %lu bytes for internal array.\n", q->capacity * sizeof(struct node));
-            return -1;
-        }
-        memcpy(new_heap, q->heap, q->size * sizeof(struct node));
+        struct pq_node * new_heap = malloc(q->capacity * sizeof(struct pq_node));
+        if (new_heap == NULL) return -1;
+        memcpy(new_heap, q->heap, q->size * sizeof(struct pq_node));
         free(q->heap);
         q->heap = new_heap;
     }
@@ -82,7 +86,7 @@ void * priority_queue_pop(priority_queue * q) {
     void * item = q->heap[0].item;
     q->size--;
     if (q->size > 0) {
-        struct node last = q->heap[q->size];
+        struct pq_node last = q->heap[q->size];
         size_t i = 0;
         while (i * 2 + 1 < q->size) {
             size_t left = i * 2 + 1;

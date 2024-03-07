@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
 #include "queue.h"
@@ -13,13 +12,9 @@ struct q {
 
 queue * queue_new() {
     queue * q = malloc(sizeof(queue));
-    if (q == NULL) {
-        fprintf(stderr, "queue_new(): Failed to allocate %lu bytes for queue struct.\n", sizeof(queue));
-        return NULL;
-    }
+    if (q == NULL) return NULL;
     q->items = malloc(INITIAL_CAPACITY * sizeof(void *));
     if (q->items == NULL) {
-        fprintf(stderr, "queue_new(): Failed to allocate %lu bytes for internal array.\n", INITIAL_CAPACITY * sizeof(void *));
         free(q);
         return NULL;
     }
@@ -29,12 +24,25 @@ queue * queue_new() {
     return q;
 }
 
+queue * queue_new_with_capacity(size_t capacity) {
+    queue * q = malloc(sizeof(queue));
+    if (q == NULL) return NULL;
+    q->items = malloc(capacity * sizeof(void *));
+    if (q->items == NULL) {
+        free(q);
+        return NULL;
+    }
+    q->front = 0;
+    q->size = 0;
+    q->capacity = capacity;
+    return q;
+}
+
 void queue_free(queue * q) {
     if (q == NULL) return;
     free(q->items);
     q->items = NULL;
     free(q);
-    q = NULL;
 }
 
 void queue_free_items(queue * q) {
@@ -53,10 +61,7 @@ int queue_enqueue(queue * q, void * item) {
     if (q->size >= q->capacity) {
         q->capacity *= 2;
         void ** new_items = malloc(q->capacity * sizeof(void *));
-        if (new_items == NULL) {
-            fprintf(stderr, "queue_enqueue(): Failed to allocate %lu bytes for internal array.\n", q->capacity * sizeof(void *));
-            return -1;
-        }
+        if (new_items == NULL) return -1;
         memcpy(new_items, q->items + q->front, (q->size - q->front) * sizeof(void *));
         memcpy(new_items + (q->size - q->front), q->items, q->front * sizeof(void *));
         free(q->items);

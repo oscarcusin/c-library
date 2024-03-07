@@ -11,18 +11,27 @@ struct l {
 
 list * list_new() {
     list * l = malloc(sizeof(list));
-    if (l == NULL) {
-        fprintf(stderr, "list_new(): Failed to allocate %lu bytes for list struct.\n", sizeof(list));
-        return NULL;
-    }
+    if (l == NULL) return NULL;
     l->items = malloc(INITIAL_CAPACITY * sizeof(void *));
     if (l->items == NULL) {
-        fprintf(stderr, "list_new(): Failed to allocate %lu bytes for internal array.\n", INITIAL_CAPACITY * sizeof(void *));
         free(l);
         return NULL;
     }
     l->size = 0;
     l->capacity = INITIAL_CAPACITY;
+    return l;
+}
+
+list * list_new_with_capacity(size_t capacity) {
+    list * l = malloc(sizeof(list));
+    if (l == NULL) return NULL;
+    l->items = malloc(capacity * sizeof(void *));
+    if (l->items == NULL) {
+        free(l);
+        return NULL;
+    }
+    l->size = 0;
+    l->capacity = capacity;
     return l;
 }
 
@@ -41,7 +50,6 @@ void list_free(list * l) {
     free(l->items);
     l->items = NULL;
     free(l);
-    l = NULL;
 }
 
 void list_free_items(list * l) {
@@ -60,16 +68,13 @@ size_t list_size(list * l) {
 int list_insert(list * l, size_t index, void * item) {
     if (l == NULL) return -1;
     if (index > l->size) {
-        printf("Index %lu out of bounds for length %lu.\n", index, l->size);
+        fprintf(stderr, "Index %lu out of bounds for length %lu.\n", index, l->size);
         return -1;
     }
     if (l->size >= l->capacity) {
         l->capacity *= 2;
         void ** new_items = realloc(l->items, l->capacity * sizeof(void *));
-        if (new_items == NULL) {
-            fprintf(stderr, "list_insert(): Failed to allocate %lu bytes for internal array.\n", l->capacity * sizeof(void *));
-            return -1;
-        }
+        if (new_items == NULL) return -1;
         l->items = new_items;
     }
     for (size_t i = l->size; i > index; i--) {
@@ -101,7 +106,7 @@ int list_remove(list * l, void * item) {
 int list_remove_at(list * l, size_t index) {
     if (l == NULL) return -1;
     if (index >= l->size) {
-        printf("Index %lu out of bounds for length %lu.\n", index, l->size);
+        fprintf(stderr, "Index %lu out of bounds for length %lu.\n", index, l->size);
         return -1;
     }
     for (size_t i = index; i < l->size - 1; i++) {
@@ -114,7 +119,7 @@ int list_remove_at(list * l, size_t index) {
 int list_set(list * l, size_t index, void * item) {
     if (l == NULL) return -1;
     if (index >= l->size) {
-        printf("Index %lu out of bounds for length %lu.\n", index, l->size);
+        fprintf(stderr, "Index %lu out of bounds for length %lu.\n", index, l->size);
         return -1;
     }
     l->items[index] = item;
@@ -124,7 +129,7 @@ int list_set(list * l, size_t index, void * item) {
 void * list_get(list * l, size_t index) {
     if (l == NULL) return NULL;
     if (index >= l->size) {
-        printf("Index %lu out of bounds for length %lu.\n", index, l->size);
+        fprintf(stderr, "Index %lu out of bounds for length %lu.\n", index, l->size);
         return NULL;
     }
     return l->items[index];
@@ -133,6 +138,16 @@ void * list_get(list * l, size_t index) {
 int list_sort(list * l, int (* comparator) (const void **, const void **)) {
     if (l == NULL) return -1;
     qsort(l->items, l->size, sizeof(void *), (int (*) (const void *, const void *)) comparator);
+    return 0;
+}
+
+int list_reverse(list * l) {
+    if (l == NULL) return -1;
+    for (size_t i = 0; i < l->size / 2; i++) {
+        void * temp = l->items[i];
+        l->items[i] = l->items[l->size - i - 1];
+        l->items[l->size - i - 1] = temp;
+    }
     return 0;
 }
 
